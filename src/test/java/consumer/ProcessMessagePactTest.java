@@ -9,7 +9,6 @@ import au.com.dius.pact.core.model.PactSpecVersion;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.model.annotations.PactDirectory;
 import au.com.dius.pact.core.model.messaging.MessagePact;
-import consumer.ProcessMessage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -34,7 +33,13 @@ public class ProcessMessagePactTest {
     @Test
     @PactTestFor(pactMethod = "message", pactVersion = PactSpecVersion.V3)
     public void shouldMatchSchema(MessagePact pact) {
-        var welcomeMessage = ProcessMessage.welcomeMessage(pact.getMessages().get(0).contentsAsString());
+        var welcomeMessage = ProcessMessage.welcomeMessage(
+                pact.getMessages()
+                        .stream()
+                        .findFirst()
+                        .get()
+                        .contentsAsString()
+        );
         assertEquals(welcomeMessage, "Welcome example name");
     }
 
